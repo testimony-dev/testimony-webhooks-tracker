@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 const childProcess = require('child_process');
-
+const { join } = require('path');
 
 module.exports = class WebhooksTracker extends EventEmitter {
     constructor({port,webhookPath, responseCode }){
@@ -15,7 +15,7 @@ module.exports = class WebhooksTracker extends EventEmitter {
 
     async instrument(page) {
           
-        var cp = childProcess.fork('./webhooksListener.js',[this.port,this.responseCode,this.webhookPath]);
+        var cp = childProcess.fork(join(__dirname, 'webhooksListener.js'),[this.port,this.responseCode,this.webhookPath]);
         
         cp.on('message',  (message)=> {
             this.report(`Arrived @ ${new Date() } \r\n Body: ${message}`);
